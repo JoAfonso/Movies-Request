@@ -10,53 +10,58 @@ function App() {
   const [error, setError] = useState(null);
 
 
-
-  const fetchMoviesHandler = useCallback( async () => {
+  const fetchMoviesHandler = useCallback(() => {
     setIsLoading(true);
     setError(null);
-    try {
-      const response = await fetch("https://http-request-star-wars-default-rtdb.firebaseio.com/movies.json");
-      if (!response.ok) {
-        throw new Error("Something went wrong!");
-      }
-
-      const data = await response.json();
-
-      const loadedMovies = [];
-
-      for (const key in data) {
-        loadedMovies.push({
-          id: key,
-          title: data[key].title,
-          openingText:data[key].openingText,
-          releaseDate:data[key].releaseDate
-        })
-      }
-
-     
-      setMovies(loadedMovies);
-    } catch (error) {
-      setError(error.message);
-    }
-    setIsLoading(false);
+    fetch("https://http-request-star-wars-default-rtdb.firebaseio.com/movies.json")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Something went wrong!");
+        }
+        return response.json();
+      })
+      .then(data => {
+        const loadedMovies = [];
+        for (const key in data) {
+          loadedMovies.push({
+            id: key,
+            title: data[key].title,
+            openingText: data[key].openingText,
+            releaseDate: data[key].releaseDate
+          })
+        }
+        setMovies(loadedMovies);
+      })
+      .catch(error => {
+        setError(error.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [])
-
+  
   useEffect(() => {
     fetchMoviesHandler();
   }, [fetchMoviesHandler]);
-
-  async function addMovieHandler(movie) {
-    const response = await fetch("https://http-request-star-wars-default-rtdb.firebaseio.com/movies.json",{
-      method: "POST",
-      body: JSON.stringify(movie),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }); 
-    const data = await response.json();
-    console.log(data)
+  
+  function addMovieHandler(movie) {
+    fetch("https://http-request-star-wars-default-rtdb.firebaseio.com/movies.json", {
+        method: "POST",
+        body: JSON.stringify(movie),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
-
   let content = <p>Found no Movies.</p>;
 
   if (movies.length > 0) {
@@ -75,7 +80,7 @@ function App() {
       <AddMovie onAddMovie={addMovieHandler}/>
     </section>
       <section>
-        <button onClick={fetchMoviesHandler}>Fetch Movies</button>
+        <button onClick={fetchMoviesHandler}>Update List</button>
       </section>
       <section>{content}</section>
     </>

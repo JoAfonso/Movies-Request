@@ -23,16 +23,17 @@ function AddMovie(props) {
 
   return (
     <form onSubmit={submitHandler}>
+      <h1>Add movie information</h1>
       <div className={classes.control}>
-        <label htmlFor='title'>Title</label>
+        <label htmlFor='title'>Title:</label>
         <input type='text' id='title' ref={titleRef} />
       </div>
       <div className={classes.control}>
-        <label htmlFor='opening-text'>Opening Text</label>
+        <label htmlFor='opening-text'>Opening Text:</label>
         <textarea rows='5' id='opening-text' ref={openingTextRef}></textarea>
       </div>
       <div className={classes.control}>
-        <label htmlFor='date'>Release Date</label>
+        <label htmlFor='date'>Release Date:</label>
         <input type='text' id='date' ref={releaseDateRef} />
       </div>
       <button>Add Movie</button>
